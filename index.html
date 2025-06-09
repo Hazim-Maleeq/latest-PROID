@@ -2,21 +2,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Memory Trail – Student Story + Rolling Ball</title>
+    <title>Memory Trail – Image + Video Frames</title>
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene background="color: #fff8dc">
       
-      <!-- Load assets -->
+      <!-- 🔹 ASSETS -->
       <a-assets>
         <img id="studentImage" src="https://raw.githubusercontent.com/Hazim-Maleeq/latest-test/main/try.jpg">
+        <video id="studentVideo" src="assets/story.mp4" autoplay loop crossorigin="anonymous" playsinline></video>
       </a-assets>
 
-      <!-- Cursor -->
+      <!-- 🔹 CURSOR -->
       <a-entity cursor="rayOrigin: mouse" raycaster="objects: .interactable, .clickable"></a-entity>
 
-      <!-- Room walls -->
+      <!-- 🔹 ROOM WALLS -->
       <a-box position="0 2.5 -5" width="10" height="5" depth="0.1" color="#fff3b0"></a-box>
       <a-box position="0 2.5 5" width="10" height="5" depth="0.1" color="#fff3b0"></a-box>
       <a-box position="5 2.5 0" width="0.1" height="5" depth="10" color="#ffeaa7"></a-box>
@@ -24,7 +25,7 @@
       <a-box position="0 5 0" width="10" height="0.1" depth="10" color="#fff3b0"></a-box>
       <a-box position="0 0 0" width="10" height="0.1" depth="10" color="#d2b48c"></a-box>
 
-      <!-- Picture frame (outer) -->
+      <!-- 🔹 IMAGE FRAME -->
       <a-plane 
         id="pictureFrame"
         class="interactable"
@@ -35,7 +36,6 @@
         material="shader: flat">
       </a-plane>
 
-      <!-- Inner image placeholder with image -->
       <a-plane 
         position="0 1.5 -2.99"
         width="1.7"
@@ -43,13 +43,39 @@
         material="shader: flat; src: #studentImage">
       </a-plane>
 
-      <!-- Placeholder text below image -->
       <a-entity
         text="value: (image of a student); color: black; align: center; width: 2.5"
         position="0 1.1 -2.98">
       </a-entity>
 
-      <!-- Pop-up memory text -->
+      <!-- 🔹 VIDEO FRAME -->
+      <a-plane 
+        id="videoFrame"
+        class="interactable"
+        position="3 1.5 -3"
+        width="2" 
+        height="1.2"
+        color="#333"
+        material="shader: flat">
+      </a-plane>
+
+      <a-video 
+        src="#studentVideo"
+        position="3 1.5 -2.99"
+        width="1.7"
+        height="0.95"
+        autoplay
+        loop
+        crossorigin="anonymous"
+        visible="true">
+      </a-video>
+
+      <a-entity
+        text="value: A student shares her story; color: black; align: center; width: 2.5"
+        position="3 1.1 -2.98">
+      </a-entity>
+
+      <!-- 🔹 HOVER TEXT -->
       <a-entity 
         id="hoverText"
         text="value: 'In 1986, I walked these halls unsure of myself. That first science fair changed my life.' - Lila, Class of ‘89'; 
@@ -58,7 +84,7 @@
         visible="false">
       </a-entity>
 
-      <!-- Rolling ball -->
+      <!-- 🔹 BALL & BUTTON -->
       <a-sphere 
         id="rollingBall"
         class="clickable"
@@ -67,7 +93,6 @@
         color="#ff9900">
       </a-sphere>
 
-      <!-- Roll Ball Button -->
       <a-plane 
         id="rollButton"
         class="clickable"
@@ -78,13 +103,12 @@
         material="shader: flat">
       </a-plane>
 
-      <!-- Button label -->
       <a-entity 
         text="value: Roll Ball; color: white; align: center; width: 2"
         position="0 0.5 -1.49">
       </a-entity>
 
-      <!-- Welcome Banner -->
+      <!-- 🔹 WELCOME BANNER -->
       <a-plane 
         id="welcomeBanner"
         position="0 2 -1.2"
@@ -95,7 +119,6 @@
         visible="true">
       </a-plane>
 
-      <!-- Welcome Text -->
       <a-entity 
         id="bannerText"
         text="value: Welcome to the Memory Trail.\nExplore student memories that shaped our institution.\nClick 'Close' to begin.; 
@@ -104,7 +127,6 @@
         visible="true">
       </a-entity>
 
-      <!-- Close Button -->
       <a-plane 
         id="closeBannerBtn"
         class="clickable"
@@ -116,7 +138,6 @@
         visible="true">
       </a-plane>
 
-      <!-- Close Button Text -->
       <a-entity 
         id="closeBtnText"
         text="value: Close; color: white; align: center; width: 1.5"
@@ -124,7 +145,7 @@
         visible="true">
       </a-entity>
 
-      <!-- Camera -->
+      <!-- 🔹 CAMERA -->
       <a-entity 
         camera 
         position="0 1.6 1"
@@ -133,19 +154,18 @@
       </a-entity>
     </a-scene>
 
-    <!-- Script -->
+    <!-- 🔹 SCRIPT -->
     <script>
       const frame = document.querySelector('#pictureFrame');
       const text = document.querySelector('#hoverText');
       const ball = document.querySelector('#rollingBall');
       const button = document.querySelector('#rollButton');
-
       const closeBtn = document.querySelector('#closeBannerBtn');
       const banner = document.querySelector('#welcomeBanner');
       const bannerText = document.querySelector('#bannerText');
       const bannerButtonText = document.querySelector('#closeBtnText');
 
-      // Hover effect
+      // Hover effect for image frame
       frame.addEventListener('mouseenter', () => {
         text.setAttribute('visible', true);
       });
@@ -154,7 +174,7 @@
         text.setAttribute('visible', false);
       });
 
-      // Ball roll
+      // Ball roll animation
       function rollBall() {
         ball.setAttribute('animation__move', {
           property: 'position',
@@ -174,7 +194,7 @@
       ball.addEventListener('click', rollBall);
       button.addEventListener('click', rollBall);
 
-      // Close banner
+      // Close welcome banner
       closeBtn.addEventListener('click', () => {
         banner.setAttribute('visible', false);
         bannerText.setAttribute('visible', false);
@@ -184,4 +204,3 @@
     </script>
   </body>
 </html>
-
