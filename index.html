@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Memory Trail – Living Yearbook</title>
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene background="color: #fff8dc">
+
+      <!-- ASSETS -->
+      <a-assets>
+        <img id="studentImage1" src="https://raw.githubusercontent.com/Hazim-Maleeq/latest-test/refs/heads/main/Amir.png">
+        <img id="studentImage2" src="https://raw.githubusercontent.com/Hazim-Maleeq/latest-test/refs/heads/main/ML2.png">
+        <video id="studentVideo" src="assets/story.mp4" crossorigin="anonymous" loop></video>
+      </a-assets>
+
+      <a-entity cursor="rayOrigin: mouse" raycaster="objects: .clickable"></a-entity>
+
+      <!-- ROOM WALLS -->
+      <a-box position="0 2.5 -5" width="10" height="5" depth="0.1" color="#fff3b0"></a-box>
+      <a-box position="0 2.5 5" width="10" height="5" depth="0.1" color="#fff3b0"></a-box>
+      <a-box position="5 2.5 0" width="0.1" height="5" depth="10" color="#ffeaa7"></a-box>
+      <a-box position="-5 2.5 0" width="0.1" height="5" depth="10" color="#ffeaa7"></a-box>
+      <a-box position="0 5 0" width="10" height="0.1" depth="10" color="#fff3b0"></a-box>
+      <a-box position="0 0 0" width="10" height="0.1" depth="10" color="#d2b48c"></a-box>
+
+      <!-- Student Images on Walls -->
+      <a-plane id="thumb1" class="clickable" position="-1.5 2 -3" width="1.5" height="2" src="#studentImage1"></a-plane>
+      <a-entity id="label1" text="value: Meet Mei Ling, Class of 1998. Graduation Day Story; color: black; align: center; width: 2.5" position="-1.5 0.8 -2.99" visible="false"></a-entity>
+
+      <a-plane id="thumb2" class="clickable" position="1.5 2 -3" width="1.5" height="2" src="#studentImage2"></a-plane>
+      <a-entity id="label2" text="value: Meet Amir, Class of 2005. First Day of School Story; color: black; align: center; width: 2.5" position="1.5 0.8 -2.99" visible="false"></a-entity>
+
+      <a-plane id="thumb3" class="clickable" position="3 2 -1.5" rotation="0 -90 0" width="1.5" height="2" src="#studentImage1"></a-plane>
+      <a-entity id="label3" text="value: Meet Mei Ling, Class of 1998. Graduation Day Story; color: black; align: center; width: 2.5" position="3 0.5 -1.5" rotation="0 -90 0" visible="false"></a-entity>
+
+      <a-plane id="thumb4" class="clickable" position="3 2 1.5" rotation="0 -90 0" width="1.5" height="2" src="#studentImage2"></a-plane>
+      <a-entity id="label4" text="value: Meet Amir, Class of 2005. First Day of School Story; color: black; align: center; width: 2.5" position="3 0.5 1.5" rotation="0 -90 0" visible="false"></a-entity>
+
+      <!-- Pop-up Video for All Students -->
+      <a-video id="popupVideo" src="#studentVideo" width="3.2" height="1.8" crossorigin="anonymous" visible="false"></a-video>
+
+      <!-- Pause/Play Button -->
+      <a-plane id="videoToggleBtn" class="clickable" width="0.8" height="0.3" color="#2196F3" visible="false"></a-plane>
+      <a-entity id="videoToggleText" text="value: Pause; color: white; align: center; width: 1.5" visible="false"></a-entity>
+
+      <!-- Pop-up Text Box -->
+      <a-plane id="popupTextBox" width="1.3" height="1.3" color="#ffffff" opacity="1" visible="false"></a-plane>
+      <a-entity id="popupText" text="value: ; color: black; align: center; width: 1.2; wrapCount: 25" visible="false"></a-entity>
+
+      <!-- Close Button (X) -->
+      <a-plane id="popupCloseBtn" class="clickable" width="0.3" height="0.3" color="#f44336" visible="false"></a-plane>
+      <a-entity id="popupCloseText" text="value: X; color: white; align: center; width: 1.5" visible="false"></a-entity>
+
+      <!-- Welcome Banner -->
+      <a-plane id="welcomeBanner" position="0 2 -1.2" width="3" height="1.5" color="#ffffff" visible="true"></a-plane>
+      <a-entity id="bannerText" text="value: Welcome to the Living Yearbook.\nClick on student photos to see them come alive and share their memories.\nClick 'Close' to begin.; color: black; align: center; width: 2.8; wrapCount: 40" position="0 2 -1.19" visible="true"></a-entity>
+      <a-plane id="closeBannerBtn" class="clickable" position="0 1.2 -1.18" width="0.8" height="0.3" color="#f44336" visible="true"></a-plane>
+      <a-entity id="closeBtnText" text="value: Close; color: white; align: center; width: 1.5" position="0 1.2 -1.17" visible="true"></a-entity>
+
+      <!-- Camera -->
+      <a-entity camera position="0 1.6 1" look-controls wasd-controls></a-entity>
+    </a-scene>
+
+    <script>
+      const videoEl = document.querySelector('#studentVideo');
+      const popupVideo = document.querySelector('#popupVideo');
+      const popupTextBox = document.querySelector('#popupTextBox');
+      const popupText = document.querySelector('#popupText');
+      const popupCloseBtn = document.querySelector('#popupCloseBtn');
+      const popupCloseText = document.querySelector('#popupCloseText');
+      const videoToggleBtn = document.querySelector('#videoToggleBtn');
+      const videoToggleText = document.querySelector('#videoToggleText');
+
+      function showPopup(textValue, wall) {
+        popupText.setAttribute('text', 'value: ' + textValue);
+        popupVideo.setAttribute('src', '#studentVideo');
+        videoEl.play();
+
+        if (wall === 'front') {
+          popupVideo.setAttribute('position', '1 1.5 -2');
+          popupVideo.setAttribute('rotation', '0 0 0');
+          popupVideo.setAttribute('visible', true);
+
+          videoToggleBtn.setAttribute('position', '1 0.4 -2');
+          videoToggleBtn.setAttribute('rotation', '0 0 0');
+          videoToggleBtn.setAttribute('visible', true);
+          videoToggleText.setAttribute('position', '1 0.4 -1.99');
+          videoToggleText.setAttribute('rotation', '0 0 0');
+          videoToggleText.setAttribute('visible', true);
+
+          popupCloseBtn.setAttribute('position', '2.3 2.6 -2.01');
+          popupCloseBtn.setAttribute('rotation', '0 0 0');
+          popupCloseBtn.setAttribute('visible', true);
+          popupCloseText.setAttribute('position', '2.3 2.6 -2');
+          popupCloseText.setAttribute('rotation', '0 0 0');
+          popupCloseText.setAttribute('visible', true);
+
+          popupTextBox.setAttribute('position', '-1.4 1.5 -2');
+          popupText.setAttribute('position', '-1.4 1.5 -1.99');
+          popupTextBox.setAttribute('rotation', '0 0 0');
+          popupText.setAttribute('rotation', '0 0 0');
+        } 
+        else if (wall === 'side') {
+          popupVideo.setAttribute('position', '2 1.5 1');
+          popupVideo.setAttribute('rotation', '0 -90 0');
+          popupVideo.setAttribute('visible', true);
+
+          videoToggleBtn.setAttribute('position', '2 0.4 1');
+          videoToggleBtn.setAttribute('rotation', '0 -90 0');
+          videoToggleBtn.setAttribute('visible', true);
+          videoToggleText.setAttribute('position', '2 0.4 1.01');
+          videoToggleText.setAttribute('rotation', '0 -90 0');
+          videoToggleText.setAttribute('visible', true);
+
+          popupCloseBtn.setAttribute('position', '2 2.6 2.3');
+          popupCloseBtn.setAttribute('rotation', '0 -90 0');
+          popupCloseBtn.setAttribute('visible', true);
+          popupCloseText.setAttribute('position', '2 2.6 2.29');
+          popupCloseText.setAttribute('rotation', '0 -90 0');
+          popupCloseText.setAttribute('visible', true);
+
+          popupTextBox.setAttribute('position', '2 1.5 -1.4');
+          popupText.setAttribute('position', '2 1.5 -1.39');
+          popupTextBox.setAttribute('rotation', '0 -90 0');
+          popupText.setAttribute('rotation', '0 -90 0');
+        }
+
+        popupTextBox.setAttribute('visible', true);
+        popupText.setAttribute('visible', true);
+      }
+
+      function hidePopup() {
+        popupVideo.setAttribute('visible', false);
+        popupTextBox.setAttribute('visible', false);
+        popupText.setAttribute('visible', false);
+        popupCloseBtn.setAttribute('visible', false);
+        popupCloseText.setAttribute('visible', false);
+        videoToggleBtn.setAttribute('visible', false);
+        videoToggleText.setAttribute('visible', false);
+        videoEl.pause();
+      }
+
+      videoToggleBtn.addEventListener('click', () => {
+        if (videoEl.paused) {
+          videoEl.play();
+          videoToggleText.setAttribute('text', 'value: Pause');
+        } else {
+          videoEl.pause();
+          videoToggleText.setAttribute('text', 'value: Play');
+        }
+      });
+
+      document.querySelector('#thumb1').addEventListener('click', () => showPopup('She still remember the thrill of wearing her gown, laughing with friends and crossing the stage. \n\nListen as she reflects on how NP shaped her courage to face the world', 'front'));
+      document.querySelector('#thumb2').addEventListener('click', () => showPopup('He talks about feeling lost on his first day, finding friends at Dood Club and how those early moments made NP feel like home. \n\n Hear him share the small memories that still matter.', 'front'));
+      document.querySelector('#thumb3').addEventListener('click', () => showPopup('She still remember the thrill of wearing her gown, laughing with friends and crossing the stage. \n\nListen as she reflects on how NP shaped her courage to face the world', 'side'));
+      document.querySelector('#thumb4').addEventListener('click', () => showPopup('He talks about feeling lost on his first day, finding friends at Dood Club and how those early moments made NP feel like home. \n\n Hear him share the small memories that still matter.', 'side'));
+
+      popupCloseBtn.addEventListener('click', hidePopup);
+      popupCloseText.addEventListener('click', hidePopup);
+
+      document.querySelector('#closeBannerBtn').addEventListener('click', () => {
+        document.querySelector('#welcomeBanner').setAttribute('visible', false);
+        document.querySelector('#bannerText').setAttribute('visible', false);
+        document.querySelector('#closeBannerBtn').setAttribute('visible', false);
+        document.querySelector('#closeBtnText').setAttribute('visible', false);
+      });
+
+      const hoverPairs = [['#thumb1','#label1'],['#thumb2','#label2'],['#thumb3','#label3'],['#thumb4','#label4']];
+      hoverPairs.forEach(pair => {
+        const thumb = document.querySelector(pair[0]);
+        const label = document.querySelector(pair[1]);
+        thumb.addEventListener('mouseenter', () => label.setAttribute('visible', true));
+        thumb.addEventListener('mouseleave', () => label.setAttribute('visible', false));
+      });
+    </script>
+  </body>
+</html>
+
